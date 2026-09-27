@@ -5,12 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayAbilitySpecHandle.h"
 #include "AGASCharacter.generated.h"
 
 
 class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
+class UUserWidget;
 struct FInputActionValue;
 
 UCLASS()
@@ -42,6 +44,18 @@ public:
 	UFUNCTION()
 	void JumpReleased();
 
+	UFUNCTION()
+	void EnterAimMode();
+
+	UFUNCTION()
+	void ExitAimMode();
+
+	UFUNCTION()
+	bool PerformAimTrace(FHitResult& OutHit);
+
+	UFUNCTION()
+	bool IsAimModeActive() const;
+
 protected:
 
 	virtual void PossessedBy(AController* NewController) override;
@@ -54,6 +68,18 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	/** Called for looking input */
+	void ToggleAimMode(const FInputActionValue& Value);
+
+	void Fire(const FInputActionValue& Value);
+
+private:
+	// Inherited via IAbilitySystemInterface
+	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	FGameplayAbilitySpecHandle AimAbilityHandle;
+	FGameplayAbilitySpecHandle FireAbilityHandle;
 
 protected:
 
@@ -69,6 +95,17 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> LookAction;
 
+	/** Toggle Input Action */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> ToggleAction;
+
+	/** Fire Input Action */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> FireAction;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "UI")
+	TObjectPtr<UUserWidget> AimCrosshairWidget;
+
 private:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -81,7 +118,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> ASC;
 
-	// Inherited via IAbilitySystemInterface
-	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	
 
 };
