@@ -21,4 +21,8 @@ public:
 		const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo,
 		const FGameplayEventData* TriggerEventData) override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	TSubclassOf<class UGameplayEffect> DamageEffectClass;
 };

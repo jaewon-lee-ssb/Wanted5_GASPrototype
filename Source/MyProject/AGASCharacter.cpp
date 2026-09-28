@@ -17,6 +17,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "AbilitySystemComponent.h"
+#include <Abilities/GameplayAbility.h>
 
 #include "Blueprint/UserWidget.h"
 
@@ -213,7 +214,11 @@ void AAGASCharacter::PossessedBy(AController* NewController)
 	{
 		ASC->GiveAbility(FGameplayAbilitySpec(UGameplayAbility_CharacterJump::StaticClass(), 1, 1));
 		AimAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(UGA_ToggleAimMode::StaticClass(), 1, 2));
-		FireAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(UGA_Fire::StaticClass(), 1, 3));
+		//FireAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(UGA_Fire::StaticClass(), 1, 3));
+		if (FireAbilityClass)
+		{
+			FireAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(FireAbilityClass, 1, 3));
+		}
 	}
 
 }
