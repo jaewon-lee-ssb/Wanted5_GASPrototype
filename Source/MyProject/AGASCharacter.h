@@ -56,9 +56,13 @@ public:
 	UFUNCTION()
 	bool IsAimModeActive() const;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void GASPostInitializeComponents();
+
 protected:
 
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void PostInitializeComponents() override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -115,9 +119,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAbilitySystemComponent> ASC;
 
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attribute", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UGASCharacterAttributeSet> CharacterAttributeSet;
 
 };

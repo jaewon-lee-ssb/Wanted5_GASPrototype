@@ -23,6 +23,8 @@
 #include "GA_ToggleAimMode.h"
 #include "GA_Fire.h"
 
+#include "GASCharacterAttributeSet.h"
+
 // Sets default values
 AAGASCharacter::AAGASCharacter()
 {
@@ -54,6 +56,9 @@ AAGASCharacter::AAGASCharacter()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
+
+	CharacterAttributeSet = CreateDefaultSubobject<UGASCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
+	ASC->AddAttributeSetSubobject<UGASCharacterAttributeSet>(CharacterAttributeSet);
 
 }
 
@@ -210,6 +215,16 @@ void AAGASCharacter::PossessedBy(AController* NewController)
 		FireAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(UGA_Fire::StaticClass(), 1, 3));
 	}
 
+}
+
+void AAGASCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	GASPostInitializeComponents();
+
+	ASC->SetNumericAttributeBase(CharacterAttributeSet->GetMaxHealthAttribute(), 200.f);
+	ASC->SetNumericAttributeBase(CharacterAttributeSet->GetHealthAttribute(), 200.f);
 }
 
 // Called to bind functionality to input
