@@ -8,6 +8,7 @@
 #include "GASCharacterAttributeSet.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAttributeDataChanged, float, OldValue, float, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOutOfHealth, AActor*, InInstigator);
 
 /**
  * 
@@ -22,15 +23,20 @@ public:
 
 	ATTRIBUTE_ACCESSORS_BASIC(ThisClass, MaxHealth);
 	ATTRIBUTE_ACCESSORS_BASIC(ThisClass, Health);
-
+	
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
+
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
 	UPROPERTY(BlueprintAssignable, Category = "Attribute")
 	mutable FAttributeDataChanged OnMaxHealthChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "Attribute")
 	mutable FAttributeDataChanged OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "Attribute")
+	mutable FOutOfHealth OnOutOfHealth;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Attribute")

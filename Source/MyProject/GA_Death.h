@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "GA_Fire.generated.h"
+#include "GA_Death.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MYPROJECT_API UGA_Fire : public UGameplayAbility
+class MYPROJECT_API UGA_Death : public UGameplayAbility
 {
 	GENERATED_BODY()
 	
@@ -19,11 +19,16 @@ public:
 		const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo,
 		const FGameplayEventData* TriggerEventData) override;
+private:
+	UGA_Death();
+
+	UFUNCTION()
+	void OnDeathMontageCompleted();
+
+	UFUNCTION()
+	void OnDeathMontageCancelled();
 
 private:
-	UGA_Fire();
-
-protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Effects")
-	TSubclassOf<class UGameplayEffect> DamageEffectClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Death")
+	TSubclassOf<class UAnimMontage> DeathMontage;
 };

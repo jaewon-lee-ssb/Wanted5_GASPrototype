@@ -3,6 +3,8 @@
 
 #include "GASCharacterAttributeSet.h"
 
+#include <GameplayEffectExtension.h>
+
 UGASCharacterAttributeSet::UGASCharacterAttributeSet()
 	: MaxHealth(100.f)
 {
@@ -30,5 +32,13 @@ void UGASCharacterAttributeSet::PostAttributeChange(const FGameplayAttribute& At
 	else if (Attribute == GetHealthAttribute())
 	{
 		OnHealthChanged.Broadcast(OldValue, NewValue);
+	}
+}
+
+void UGASCharacterAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+	if (GetHealth() <= 0.f)
+	{
+		OnOutOfHealth.Broadcast(Data.EffectSpec.GetEffectContext().GetInstigator());
 	}
 }

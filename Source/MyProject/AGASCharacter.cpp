@@ -5,6 +5,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include <Components/WidgetComponent.h>
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
@@ -46,6 +47,13 @@ AAGASCharacter::AAGASCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.f;
+
+	HpBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HpBar"));
+	HpBar->SetupAttachment(GetMesh());
+	HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
+	HpBar->SetWidgetSpace(EWidgetSpace::Screen);
+	HpBar->SetDrawSize(FVector2D(150.0f, 20.f));
+	HpBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -204,6 +212,11 @@ bool AAGASCharacter::IsAimModeActive() const
 	return AimSpec && AimSpec->IsActive();
 }
 
+void AAGASCharacter::OnOutOfHealthCpp(AActor* InInstigator)
+{
+	HpBar->SetVisibility(false);
+}
+
 void AAGASCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -228,6 +241,8 @@ void AAGASCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	GASPostInitializeComponents();
+
+	ASC->GetSet<UGASCharacterAttributeSet>()->OnOutOfHealth.AddDynamic(this, &ThisClass::OnOutOfHealthCpp);
 
 	ASC->SetNumericAttributeBase(CharacterAttributeSet->GetMaxHealthAttribute(), 200.f);
 	ASC->SetNumericAttributeBase(CharacterAttributeSet->GetHealthAttribute(), 200.f);

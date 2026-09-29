@@ -59,6 +59,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void GASPostInitializeComponents();
 
+	UFUNCTION()
+	void OnOutOfHealthCpp(AActor* InInstigator);
+
 protected:
 
 	virtual void PossessedBy(AController* NewController) override;
@@ -110,6 +113,9 @@ protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "UI")
 	TObjectPtr<UUserWidget> AimCrosshairWidget;
 
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "UI")
+	TObjectPtr<class UWidgetComponent> HpBar;
+
 private:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -121,6 +127,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Abilities")
 	TSubclassOf<class UGameplayAbility> FireAbilityClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Abilities")
+	TSubclassOf<class UGameplayAbility> JumpAbilityClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAbilitySystemComponent> ASC;
