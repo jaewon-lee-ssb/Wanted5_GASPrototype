@@ -24,37 +24,18 @@ public:
 	// Sets default values for this character's properties
 	AAGASCharacter();
 
-	/** Returns CameraBoom subobject **/
+	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	/** Handles move inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category = "Input")
-	virtual void DoMove(float Right, float Forward);
-
-	/** Handles look inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category = "Input")
-	virtual void DoLook(float Yaw, float Pitch);
-
-	UFUNCTION()
-	void JumpPressed();
-
-	UFUNCTION()
-	void JumpReleased();
-
-	UFUNCTION()
-	void EnterAimMode();
-
-	UFUNCTION()
-	void ExitAimMode();
-
-	UFUNCTION()
 	bool PerformAimTrace(FHitResult& OutHit);
 
-	UFUNCTION()
 	bool IsAimModeActive() const;
+
+	void EnterAimMode();
+	void ExitAimMode();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void GASPostInitializeComponents();
@@ -63,30 +44,26 @@ public:
 	void OnOutOfHealthCpp(AActor* InInstigator);
 
 protected:
-
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void PostInitializeComponents() override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	/** Called for movement input */
-	void Move(const FInputActionValue& Value);
 
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
-
-	/** Called for looking input */
 	void ToggleAimMode(const FInputActionValue& Value);
 
 	void Fire(const FInputActionValue& Value);
 
 private:
-	// Inherited via IAbilitySystemInterface
-	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
 
-	FGameplayAbilitySpecHandle AimAbilityHandle;
-	FGameplayAbilitySpecHandle FireAbilityHandle;
+	void DoMove(float Right, float Forward);
+	void DoLook(float Yaw, float Pitch);
+
+	void JumpPressed();
+	void JumpReleased();
 
 protected:
 
@@ -110,6 +87,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> FireAction;
 
+	/** Run Input Action */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> RunAction;
+
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "UI")
 	TObjectPtr<UUserWidget> AimCrosshairWidget;
 
@@ -117,11 +98,14 @@ protected:
 	TObjectPtr<class UWidgetComponent> HpBar;
 
 private:
-	/** Camera boom positioning the camera behind the character */
+	FGameplayAbilitySpecHandle AimAbilityHandle;
+	FGameplayAbilitySpecHandle FireAbilityHandle;
+	FGameplayAbilitySpecHandle RunAbilityHandle;
+	FGameplayAbilitySpecHandle JumpAbilityHandle;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FollowCamera;
 

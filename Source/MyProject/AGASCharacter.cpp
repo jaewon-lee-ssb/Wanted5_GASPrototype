@@ -28,6 +28,8 @@
 
 #include "GASCharacterAttributeSet.h"
 
+#include "GameplayTagContainer.h"
+
 // Sets default values
 AAGASCharacter::AAGASCharacter()
 {
@@ -43,7 +45,7 @@ AAGASCharacter::AAGASCharacter()
 
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.f;
@@ -225,9 +227,15 @@ void AAGASCharacter::PossessedBy(AController* NewController)
 
 	if (HasAuthority())
 	{
-		ASC->GiveAbility(FGameplayAbilitySpec(UGameplayAbility_CharacterJump::StaticClass(), 1, 1));
+		
+		
+		if (JumpAbilityClass)
+		{
+			JumpAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(JumpAbilityClass, 1, 1));
+		}
+		
 		AimAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(UGA_ToggleAimMode::StaticClass(), 1, 2));
-		//FireAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(UGA_Fire::StaticClass(), 1, 3));
+
 		if (FireAbilityClass)
 		{
 			FireAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(FireAbilityClass, 1, 3));
@@ -318,6 +326,7 @@ void AAGASCharacter::Fire(const FInputActionValue& Value)
 	if (ASC)
 	{
 		ASC->TryActivateAbility(FireAbilityHandle);
+
 	}
 }
 
